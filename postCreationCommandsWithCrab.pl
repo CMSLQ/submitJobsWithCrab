@@ -182,7 +182,7 @@ foreach $inputListLine(@inputListFile)
     
     print STATUSREPORT "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
 
-    print "rm -f $tempLog\n";
+    #print "rm -f $tempLog\n";
     system "rm -f $tempLog";
 
 }
