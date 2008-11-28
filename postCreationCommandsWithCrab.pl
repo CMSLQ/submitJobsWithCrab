@@ -15,7 +15,12 @@ use Getopt::Std;
 my $prodDir;
 my $inputList;
 
-getopts('h:d:i:');
+my $IsSubmitJobs=0;
+my $IsGetOutput=0;
+my $IsKillJobs=0;
+my $IsResubmitJobs=0;
+
+getopts('h:d:i:g:k:r:s:');
 
 if(!$opt_d) {help();}
 if(!$opt_i) {help();}
@@ -23,6 +28,11 @@ if(!$opt_i) {help();}
 if($opt_h) {help();}
 if($opt_d) {$prodDir = $opt_d;}
 if($opt_i) {$inputList = $opt_i;}
+if($opt_s && !$opt_g && !$opt_k && !$opt_r) {$IsSubmitJobs = 1;}
+if($opt_g && !$opt_k && !$opt_r && !$opt_s) {$IsGetOutput = 1;}
+if($opt_k && !$opt_g && !$opt_r && !$opt_s) {$IsKillJobs = 1;}
+if($opt_r && !$opt_g && !$opt_k && !$opt_s) {$IsResubmitJobs = 1;}
+
 
 ## create directories
 
@@ -91,8 +101,31 @@ foreach $inputListLine(@inputListFile)
     ## get output of crab jobs for this dataset
     print "getting output of crab jobs for dataset $dataset ... \n"; 
 
-    print "crab -getoutput -c $thisWorkDir\n";
-    system "crab -getoutput -c $thisWorkDir";
+
+    if($IsSubmitJobs==1)
+    {
+	print "crab -submit all $thisWorkDir\n";
+	system "crab -submit all -c $thisWorkDir";
+    }
+
+    if($IsGetOutput==1)
+    {
+	print "crab -getoutput all -c $thisWorkDir\n";
+	system "crab -getoutput all -c $thisWorkDir";
+    }
+
+    if($IsKillJobs==1)
+    {
+	print "crab -kill all $thisWorkDir\n";
+	system "crab -kill all -c $thisWorkDir";
+    }
+
+    if($IsResubmitJobs==1)
+    {
+	print "crab -resubmit all $thisWorkDir\n";
+	system "crab -resubmit all -c $thisWorkDir";
+    }
+
 
 }
 
@@ -100,11 +133,21 @@ foreach $inputListLine(@inputListFile)
 #---------------------------------------------------------#
 
 sub help(){
-    print "Usage: ./getoutputWithCrab.pl -d <prodDir> -i <inputList> [-h <help>] \n";
-    print "Example: ./getoutputWithCrab.pl -d /home/santanas/Data/test/RootNtuples/V00-00-05_xxx_xxx -i inputList.txt \n";
+    print "Usage: ./postCreationCommandsWithCrab.pl -d <prodDir> -i <inputList> [-s <submitJobs?> -g <getOutput?> -k <killJobs?> -r <resubmitJobs?> -h <help?>] \n";
+    print "Example to only get the status: ./postCreationCommandsWithCrab.pl -d /home/santanas/Data/test/RootNtuples/V00-00-05_xxx_xxx -i inputList.txt \n";
+    print "Example to submit: ./postCreationCommandsWithCrab.pl -d /home/santanas/Data/test/RootNtuples/V00-00-05_xxx_xxx -i inputList.txt -s yes \n";
+    print "Example to kill jobs: ./postCreationCommandsWithCrab.pl -d /home/santanas/Data/test/RootNtuples/V00-00-05_xxx_xxx -i inputList.txt -k yes \n";
     print "Options:\n";
     print "-d <prodDir>:          choose the production directory\n";
     print "-i <inputList>:        choose the input list with the datasets\n";
-    print "-h <help>:             this help print-out\n";
+    print "-h <yes> :             to print the help \n";
+    print "-s <yes>:              submit all jobs\n";
+    print "-g <yes>:              getoutput from all jobs\n";
+    print "-k <yes>:              kill all jobs\n";
+    print "-r <yes>:              resubmit all jobs\n";
+
+    print "NOTE: s,g,k,r cannot be used togheter (they are mutually exclusive)\n";
+
     die "please, try again...\n";
 }
+

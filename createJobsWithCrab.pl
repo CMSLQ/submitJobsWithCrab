@@ -224,7 +224,6 @@ foreach $inputListLine(@inputListFile)
     close(NEWCRABCONFIG);
 
 
-
     ## create crab jobs for this dataset
     print "creating jobs for dataset $dataset ... \n"; 
 
@@ -232,10 +231,9 @@ foreach $inputListLine(@inputListFile)
     system "crab -create -cfg $newcrabconfig";
 
     ## submit crab jobs for this dataset
-    print "submitting jobs for dataset $dataset ... \n"; 
-
-    print "crab -submit -c $thisWorkDir\n";
-    system "crab -submit -c $thisWorkDir";
+    #print "submitting jobs for dataset $dataset ... \n"; 
+    #print "crab -submit -c $thisWorkDir\n";
+    #system "crab -submit -c $thisWorkDir";
 
 }
 
@@ -243,14 +241,14 @@ foreach $inputListLine(@inputListFile)
 #---------------------------------------------------------#
 
 sub help(){
-    print "Usage: ./submitWithCrab.pl -d <storageDir> -v <tagname> -i <inputList> -t <templateCrab> -c <myCMSSWconfig> [-h <help>] \n";
-    print "Example: ./submitWithCrab.pl -d /home/santanas/Data/test/RootNtuples -v V00-00-05 -i inputList.txt -t template_crab.cfg -c myCMSSW_cfg.py \n";
+    print "Usage: ./createJobsWithCrab.pl -d <storageDir> -v <tagname> -i <inputList> -t <templateCrab> -c <myCMSSWconfig> [-h <help?>] \n";
+    print "Example: ./createJobsWithCrab.pl -d /home/santanas/Data/test/RootNtuples -v V00-00-05 -i inputList.txt -t template_crab.cfg -c myCMSSW_cfg.py \n";
     print "Options:\n";
     print "-d <storageDir>:       choose the storage directory\n";
     print "-v <tagname>:          choose the tagname of RootNtupleMaker\n";
     print "-i <inputList>:        choose the input list with the datasets\n";
     print "-t <templateCrab>:     choose the crab template\n";
     print "-c <myCMSSWconfig>:    choose the CMSSW config file\n";
-    print "-h <help>:             this help print-out\n";
+    print "-h <yes> :             to print the help \n";
     die "please, try again...\n";
 }
