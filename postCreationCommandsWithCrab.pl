@@ -12,6 +12,7 @@ use Getopt::Std;
 
 ## input info
 
+my $statusReport="statusReport.log";
 my $prodDir;
 my $inputList;
 
@@ -50,6 +51,15 @@ open (INPUTLIST, "<$inputList") || die ("...error opening file $inputList $!");
 close(INPUTLIST);
 
 
+## open file for final status report
+
+open(STATUSREPORT,">$statusReport");
+
+
+my $fullCrabStatusOutput="statusCrab.log";
+system "rm -f $fullCrabStatusOutput";
+system "touch $fullCrabStatusOutput";
+
 ## loop over datasets in the list
 
 foreach $inputListLine(@inputListFile)
@@ -57,7 +67,9 @@ foreach $inputListLine(@inputListFile)
     chomp($inputListLine); 
     #print $inputListLine;
 
+
     ## split each line
+
     my ($dataset, $Nevents, $Njobs) = split(/\s+/, $inputListLine);
     my @datasetParts = split(/\//, $dataset);
     shift @datasetParts; #remove the first element of the list which is an empty-space
@@ -88,17 +100,17 @@ foreach $inputListLine(@inputListFile)
 
 
     ## create workdir for this dataset
+
     my $thisWorkDir=$workDir."/".$datasetName;
 
-
-    ## check status of crab jobs for this dataset
-    print "checking status of crab jobs for dataset $dataset ... \n"; 
-
-    print "crab -status -c $thisWorkDir\n";
-    system "crab -status -c $thisWorkDir";
+    print STATUSREPORT "\n";
+    print STATUSREPORT "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
+    print STATUSREPORT "Dataset: $dataset \n";
+    print STATUSREPORT "Workdir: $thisWorkDir \n";
 
 
     ## get output of crab jobs for this dataset
+
     print "getting output of crab jobs for dataset $dataset ... \n"; 
 
 
@@ -127,7 +139,62 @@ foreach $inputListLine(@inputListFile)
     }
 
 
+
+    ## check status of crab jobs for this dataset and fill the status report
+
+    print "checking status of crab jobs for dataset $dataset ... \n"; 
+
+    my $tempLog="temp.log";
+
+    print "crab -status -c $thisWorkDir >& $tempLog \n";
+    system "crab -status -c $thisWorkDir >& $tempLog";
+
+    system "cat $tempLog \>\> $fullCrabStatusOutput";
+
+    
+    open (TEMPLOG, "<$tempLog") || die ("...error opening file $inputList $!");
+    @tempLogFile = <TEMPLOG>;
+    #print "@tempLogFile\n";
+    close(TEMPLOG);
+    
+    my $printThisLine=0;
+
+    foreach $tempLogFileLine(@tempLogFile)
+    {
+
+	chomp ($tempLogFileLine);
+
+	if($printThisLine==1)
+	{
+	    print STATUSREPORT "$tempLogFileLine\n";
+	    $printThisLine=0;
+	}
+
+	if($tempLogFileLine=~/\>\>\>\>\>\>\>\>\>/)
+	{
+	    #print "$tempLogFileLine\n"; 
+	    print STATUSREPORT "$tempLogFileLine\n";
+	    $printThisLine=1;
+	}
+
+    }
+
+    
+    print STATUSREPORT "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
+
+    print "rm -f $tempLog\n";
+    system "rm -f $tempLog";
+
 }
+
+
+close(STATUSREPORT);
+
+
+print "\n";
+print ">>>>>> full output from the commands \"crab -status\" at $fullCrabStatusOutput\n";
+print ">>>>>> summary status report on the full production at $statusReport\n";
+
 
 
 #---------------------------------------------------------#
