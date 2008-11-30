@@ -164,17 +164,21 @@ foreach $inputListLine(@inputListFile)
 
 	chomp ($tempLogFileLine);
 
-	if($printThisLine==1)
+	if($tempLogFileLine=~/^(\s){10}(\w){1,}/)
 	{
 	    print STATUSREPORT "$tempLogFileLine\n";
-	    $printThisLine=0;
 	}
+
+#	if($printThisLine==1)
+#	{
+#	    print STATUSREPORT "$tempLogFileLine\n";
+#	}
 
 	if($tempLogFileLine=~/\>\>\>\>\>\>\>\>\>/)
 	{
 	    #print "$tempLogFileLine\n"; 
 	    print STATUSREPORT "$tempLogFileLine\n";
-	    $printThisLine=1;
+	    #$printThisLine=1;
 	}
 
     }
