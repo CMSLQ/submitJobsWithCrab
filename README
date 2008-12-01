@@ -23,6 +23,8 @@ Instead of the output filename you had before, put "THISROOTFILE"
 example:
 process.treeCreator.rootfile = cms.untracked.string("THISROOTFILE")
 
+((( Change directory to /submitJobsWithCrab )))
+
 
 5) create input list with datasets that you want to analyze 
 
@@ -36,20 +38,18 @@ example (inputList.txt):
 /QCDDiJetPt170to230/Summer08_IDEAL_V9_v1/GEN-SIM-RECO 30 3
 
 
-6) create the crab jobs 
+6) Create the crab jobs 
 
-./createJobsWithCrab.pl 
+Follow instructions generated with ./createJobsWithCrab.pl to create jobs. 
 
-and follow the instructions in the help (./createJobsWithCrab.pl -h yes)
+Usage: ./createJobsWithCrab.pl -d <storageDir> -v <tagname> -i <inputList> -t <templateCrab> -c <myCMSSWconfig> [-h <help?>]
 
-example:
-
-./createJobsWithCrab.pl -d /home/santanas/Data/test/RootNtuples -v V00-00-05 -i inputList.txt -t template_crab.cfg -c myCMSSW_cfg.py
+Example: ./createJobsWithCrab.pl -d /home/santanas/Data/test/RootNtuples -v V00-00-05 -i inputList.txt -t template_crab.cfg -c myCMSSW_cfg.py
 
 
 This command will create the following directory structure:
 
-/home/santanas/Data/test/RootNtuples/V00-00-05_currentDate
+/home/santanas/Data/test/RootNtuples/V00-00-05_currentDateAndTime (this is the so-called "production directory" prodDir)
 
   --> cfgfiles (it will contain the crab and cmssw for each crab job created) 
   --> output (it will contain the final output, i.e. .root files)
@@ -73,23 +73,23 @@ After creating the jobs you can use the script
 
 to make the following actions:
 
+   0) status
    1) submit
    2) getouput
    3) kill
    4) resubmit
 
-the status of the jobs (crab -status) will be summarized automatically in two files: 
+The status of the jobs (crab -status) will be summarized automatically in two files: 
 independently from which action you do:
 
    - statusCrab.log   (the full output from the "crab -status" command)
    - statusReport.log (status report summary)
 
-See the help (./postCreationCommandsWithCrab.pl -h yes) for the details.
+See the help (just run ./postCreationCommandsWithCrab.pl with no options) for details.
 
-NOTE: For the moment you can apply these action on all the jobs created, you cannot 
-specify a sub-set of the jobs. Anyway for particular, you can always look 
+NOTE: For the moment you can apply these actions on all the jobs created, you cannot 
+specify a sub-set of the jobs. Anyway for particular cases, you can always look 
 at the status report and apply by hand a specific action that you need
-on a single dataset or single jobs.
-
+on a single dataset or a single job.
 
 P.S. please give me feedback (francesco.santanastasio@cern.ch)
