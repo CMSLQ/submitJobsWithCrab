@@ -1,3 +1,6 @@
+--------- Instructions --------------
+
+
 1) setup LCG environment and crab
 
 source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.csh 
@@ -17,18 +20,21 @@ cmsRun myCMSSW_cfg.py
 
 4) modify your CMSSW config file for submission with crab
 
-The only thing you should change in myCMSSW_cfg.py is the name of the output file.
-Instead of the output filename you had before, put "THISROOTFILE"
+The only thing you should change in myCMSSW_cfg.py is the name 
+of the output file;
+instead of the output filename you had before, put "THISROOTFILE"
 
 example:
 process.treeCreator.rootfile = cms.untracked.string("THISROOTFILE")
 
+
 ((( Change directory to /submitJobsWithCrab )))
 
 
-5) create input list with datasets that you want to analyze 
+5) create input list 
 
-the format of the text file is: 
+create an input list with datasets that you want to analyze. 
+The format of the text file is: 
 
 dataset_name   total_number_of_events     number_of_jobs
 
@@ -49,7 +55,9 @@ Example: ./createJobsWithCrab.pl -d /home/santanas/Data/test/RootNtuples -v V00-
 
 This command will create the following directory structure:
 
-/home/santanas/Data/test/RootNtuples/V00-00-05_currentDateAndTime (this is the so-called "production directory" prodDir)
+/home/santanas/Data/test/RootNtuples/V00-00-05_currentDateAndTime 
+(in the jargon of this scirpt 
+this is the so-called "production directory" or prodDir)
 
   --> cfgfiles (it will contain the crab and cmssw for each crab job created) 
   --> output (it will contain the final output, i.e. .root files)
@@ -64,6 +72,9 @@ This command will create the following directory structure:
       After retrieving the output, the log files STDERR and STDOUT 
       of the cmssw jobs will be copied for each dataset in the directory "res")
 
+NOTE: the input list will be also copied in the "prodDir"
+(i.e. /home/santanas/Data/test/RootNtuples/V00-00-05_currentDateAndTime)
+
 
 7) do other actions (submit/getouput/...) after the creation of the jobs  
 
@@ -73,14 +84,14 @@ After creating the jobs you can use the script
 
 to make the following actions:
 
-   0) status
-   1) submit
-   2) getouput
-   3) kill
-   4) resubmit
+   - status
+   - submit
+   - getouput
+   - kill
+   - resubmit
 
-The status of the jobs (crab -status) will be summarized automatically in two files: 
-independently from which action you do:
+The status of the jobs (crab -status) will be summarized automatically in two files
+, independetly from which action you do:
 
    - statusCrab.log   (the full output from the "crab -status" command)
    - statusReport.log (status report summary)
@@ -91,5 +102,6 @@ NOTE: For the moment you can apply these actions on all the jobs created, you ca
 specify a sub-set of the jobs. Anyway for particular cases, you can always look 
 at the status report and apply by hand a specific action that you need
 on a single dataset or a single job.
+
 
 P.S. please give me feedback (francesco.santanastasio@cern.ch)

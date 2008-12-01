@@ -61,6 +61,8 @@ system("mkdir -p $cfgfilesDir");
 system("mkdir -p $outputDir");
 system("mkdir -p $workDir");
 
+system("cp $inputList $productionDir\/inputList.txt");
+
 ## read input list
 
 open (INPUTLIST, "<$inputList") || die ("...error opening file $inputList $!");
