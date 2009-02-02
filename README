@@ -31,6 +31,10 @@ process.treeCreator.rootfile = cms.untracked.string("THISROOTFILE")
 ((( Change directory to /submitJobsWithCrab )))
 
 
+For the moment remeber to change also createJobsWithCrab.pl 
+at #%%%%%%%%%%%%% IMPORTANT %%%%%%%%%%%%% 
+It will be fixed soon.
+
 5) create input list 
 
 create an input list with datasets that you want to analyze. 
