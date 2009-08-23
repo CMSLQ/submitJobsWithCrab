@@ -1,5 +1,13 @@
 --------- Instructions --------------
 
+**** NOTE ****
+
+- template_crab_caf_castor.cfg and template_crab_castor.cfg 
+  are NOT updated!
+
+- template_crab.cfg is ok.
+
+**************
 
 1) setup LCG environment and crab
 
