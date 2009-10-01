@@ -38,11 +38,43 @@ if($opt_c) {$myCMSSWconfig = $opt_c;}
 #my $tagname = "V00-00-05";
 
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);
-$year = $year + 1900;
+$year = $year + 1900 - 2000;
 $mon = $mon + 1;
 
-my $date = "$year$mon$mday\_$hour$min$sec"; 
+#print localtime(time);
+#print "\n";
+#print "$date\n";
+
+#print "year = $year\n";
+#print "mon = $mon\n";
+#print "mday = $mday\n";
+#print "hour = $hour\n";
+#print "min = $min\n";
+#print "sec = $sec\n";
+
+if($year<10){ $year = "0$year"; 
+	  #   print "change year --> $year\n"; 
+	  }
+if($mon<10){ $mon = "0$mon"; 
+	  #   print "change mon --> $mon\n"; 
+	  }
+if($mday<10){ $mday = "0$mday"; 
+	  #   print "change mday --> $mday\n"; 
+	  }
+if($hour<10){ $hour = "0$hour"; 
+	  #   print "change hour --> $hour\n"; 
+	  }
+if($min<10){ $min = "0$min"; 
+	  #   print "change min --> $min\n"; 
+	  }
+if($sec<10){ $sec = "0$sec"; 
+	  #   print "change sec --> $sec\n"; 
+	  }
+
+$date = "$year$mon$mday\_$hour$min$sec"; 
 #my $date = "currentdate";
+#print "\n";
+#print "$date\n";
 
 ## create directories
 
