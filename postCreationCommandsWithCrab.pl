@@ -20,8 +20,9 @@ my $IsSubmitJobs=0;
 my $IsGetOutput=0;
 my $IsKillJobs=0;
 my $IsResubmitJobs=0;
+my $IsPublishJobs=0;
 
-getopts('h:d:i:g:k:r:s:');
+getopts('h:d:i:g:k:r:s:p:');
 
 if(!$opt_d) {help();}
 if(!$opt_i) {help();}
@@ -29,10 +30,11 @@ if(!$opt_i) {help();}
 if($opt_h) {help();}
 if($opt_d) {$prodDir = $opt_d;}
 if($opt_i) {$inputList = $opt_i;}
-if($opt_s && !$opt_g && !$opt_k && !$opt_r) {$IsSubmitJobs = 1;}
-if($opt_g && !$opt_k && !$opt_r && !$opt_s) {$IsGetOutput = 1;}
-if($opt_k && !$opt_g && !$opt_r && !$opt_s) {$IsKillJobs = 1;}
-if($opt_r && !$opt_g && !$opt_k && !$opt_s) {$IsResubmitJobs = 1;}
+if($opt_s && !$opt_g && !$opt_k && !$opt_r && !$opt_p) {$IsSubmitJobs = 1;}
+if($opt_g && !$opt_k && !$opt_r && !$opt_s && !$opt_p) {$IsGetOutput = 1;}
+if($opt_k && !$opt_g && !$opt_r && !$opt_s && !$opt_p) {$IsKillJobs = 1;}
+if($opt_r && !$opt_g && !$opt_k && !$opt_s && !$opt_p) {$IsResubmitJobs = 1;}
+if($opt_p && !$opt_g && !$opt_k && !$opt_s && !$opt_r) {$IsPublishJobs = 1;}
 
 
 ## create directories
@@ -116,7 +118,7 @@ foreach $inputListLine(@inputListFile)
 
     if($IsSubmitJobs==1)
     {
-	print "crab -submit all $thisWorkDir\n";
+	print "crab -submit all -c $thisWorkDir\n";
 	system "crab -submit all -c $thisWorkDir";
     }
 
@@ -128,16 +130,21 @@ foreach $inputListLine(@inputListFile)
 
     if($IsKillJobs==1)
     {
-	print "crab -kill all $thisWorkDir\n";
+	print "crab -kill all -c $thisWorkDir\n";
 	system "crab -kill all -c $thisWorkDir";
     }
 
     if($IsResubmitJobs==1)
     {
-	print "crab -resubmit all $thisWorkDir\n";
+	print "crab -resubmit all -c $thisWorkDir\n";
 	system "crab -resubmit all -c $thisWorkDir";
     }
 
+    if($IsPublishJobs==1)
+    {
+	print "crab -publish all -c $thisWorkDir\n";
+	system "crab -publish all -c $thisWorkDir";
+    }
 
 
     ## check status of crab jobs for this dataset and fill the status report
@@ -204,7 +211,7 @@ print ">>>>>> summary status report on the full production at $statusReport\n";
 #---------------------------------------------------------#
 
 sub help(){
-    print "Usage: ./postCreationCommandsWithCrab.pl -d <prodDir> -i <inputList> [-s <submitJobs?> -g <getOutput?> -k <killJobs?> -r <resubmitJobs?> -h <help?>] \n";
+    print "Usage: ./postCreationCommandsWithCrab.pl -d <prodDir> -i <inputList> [-s <submitJobs?> -g <getOutput?> -k <killJobs?> -r <resubmitJobs?> -p <publishJobs> -h <help?>] \n";
     print "Example to only get the status: ./postCreationCommandsWithCrab.pl -d /home/santanas/Data/test/RootNtuples/V00-00-05_xxx_xxx -i inputList.txt \n";
     print "Example to submit: ./postCreationCommandsWithCrab.pl -d /home/santanas/Data/test/RootNtuples/V00-00-05_xxx_xxx -i inputList.txt -s yes \n";
     print "Example to kill jobs: ./postCreationCommandsWithCrab.pl -d /home/santanas/Data/test/RootNtuples/V00-00-05_xxx_xxx -i inputList.txt -k yes \n";
@@ -216,8 +223,9 @@ sub help(){
     print "-g <yes>:              getoutput from all jobs\n";
     print "-k <yes>:              kill all jobs\n";
     print "-r <yes>:              resubmit all jobs\n";
+    print "-p <yes>:              publish all jobs\n";
 
-    print "NOTE: s,g,k,r cannot be used togheter (they are mutually exclusive)\n";
+    print "NOTE: s,g,k,r,p cannot be used togheter (they are mutually exclusive) \n";
 
     die "please, try again...\n";
 }
