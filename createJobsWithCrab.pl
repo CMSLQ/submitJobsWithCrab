@@ -18,10 +18,11 @@ my $inputList;
 my $templateCrab;
 my $myCMSSWconfig;
 
-getopts('h:d:v:i:t:c:');
+getopts('h:d:v:p:i:t:c:');
 
 if(!$opt_d) {help();}
 if(!$opt_v) {help();}
+if(!$opt_p) {help();}
 if(!$opt_i) {help();}
 if(!$opt_t) {help();}
 if(!$opt_c) {help();}
@@ -29,9 +30,17 @@ if(!$opt_c) {help();}
 if($opt_h) {help();}
 if($opt_d) {$storageDir = $opt_d;}
 if($opt_v) {$tagname = $opt_v;}
+if($opt_p) {$publishname = $opt_p;}
 if($opt_i) {$inputList = $opt_i;}
 if($opt_t) {$templateCrab = $opt_t;}
 if($opt_c) {$myCMSSWconfig = $opt_c;}
+
+
+#check size of publishname
+if( length($publishname) > 10)
+{
+    die ("...$publishname is too long, max 10 characters $!");
+}
 
 
 #my $storageDir = "/home/santanas/Data/test/RootNtuples";
@@ -95,13 +104,17 @@ system("mkdir -p $workDir");
 
 system("cp $inputList $productionDir\/inputList.txt");
 
+## create publish data name (not always used) 
+
+my $publishdataname = "$publishname\_$date";
+#print "$publishdataname\n";
+
 ## read input list
 
 open (INPUTLIST, "<$inputList") || die ("...error opening file $inputList $!");
 @inputListFile = <INPUTLIST>;
 #print @inputListFile;
 close(INPUTLIST);
-
 
 ## loop over datasets in the list
 
@@ -176,7 +189,7 @@ foreach $inputListLine(@inputListFile)
 	
 	if($templateCMSSWFileLine=~/THISROOTFILE/)
 	{
-	    $templateCMSSWFileLine = "process.treeCreator.rootfile = cms.untracked.string\(\"$outputfile\"\)";
+	    $templateCMSSWFileLine = "fileName = cms.string\(\"$outputfile\"\)";
 	    #print("$templateCMSSWFileLine\n");
 	}
 
@@ -250,6 +263,12 @@ foreach $inputListLine(@inputListFile)
 	    #print("$templateCrabFileLine\n");
 	}
 
+	if($templateCrabFileLine=~/THISPUBLISHDATASETNAME/)
+	{
+	    $templateCrabFileLine = "publish_data_name = $publishdataname";
+	    #print("$templateCrabFileLine\n");
+	}
+
 	print NEWCRABCONFIG "$templateCrabFileLine\n";
 
     }
@@ -275,11 +294,12 @@ foreach $inputListLine(@inputListFile)
 #---------------------------------------------------------#
 
 sub help(){
-    print "Usage: ./createJobsWithCrab.pl -d <storageDir> -v <tagname> -i <inputList> -t <templateCrab> -c <myCMSSWconfig> [-h <help?>] \n";
-    print "Example: ./createJobsWithCrab.pl -d /home/santanas/Data/test/RootNtuples -v V00-00-05 -i inputList.txt -t template_crab.cfg -c myCMSSW_cfg.py \n";
+    print "Usage: ./createJobsWithCrab.pl -d <storageDir> -v <tagname> -p <publishname> -i <inputList> -t <templateCrab> -c <myCMSSWconfig> [-h <help?>] \n";
+    print "Example: ./createJobsWithCrab.pl -d /home/santanas/Data/test/RootNtuples -v V00-00-05 -p LQrtTple -i inputList.txt -t template_crab.cfg -c myCMSSW_cfg.py \n";
     print "Options:\n";
     print "-d <storageDir>:       choose the storage directory\n";
     print "-v <tagname>:          choose the tagname of RootNtupleMaker\n";
+    print "-p <publishname>:      choose the publish name (used only in case the crab template includes the publication) - NOTE max 10 characters (i.e. AODLQskim, LQrtTple, test, ...) \n";
     print "-i <inputList>:        choose the input list with the datasets\n";
     print "-t <templateCrab>:     choose the crab template\n";
     print "-c <myCMSSWconfig>:    choose the CMSSW config file\n";
